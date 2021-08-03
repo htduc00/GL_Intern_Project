@@ -1,1 +1,1 @@
-# GL_Intern_Project
+# Intern_Project
