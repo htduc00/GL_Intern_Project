@@ -1,0 +1,2 @@
+D:\GL_Intern_Project\Task1\Debug\Task1.exe
+D:\GL_Intern_Project\Task1\Debug\Task1.pdb
