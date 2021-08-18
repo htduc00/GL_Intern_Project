@@ -1,4 +1,5 @@
 #include "StateContext.h"
+#include "BaseState.h"
 
 StateContext::StateContext(BaseState* state) : m_state(nullptr)
 {

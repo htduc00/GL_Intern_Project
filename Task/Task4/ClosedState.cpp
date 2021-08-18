@@ -1,7 +1,6 @@
 #include "ClosedState.h"
 #include "OpenedState.h"
 #include "LockedState.h"
-#include"StateContext.h"
 #include <iostream>
 void ClosedState::unlock(StateContext* context) {
 	std::cout << "Door is already unlock\n" << std::endl;

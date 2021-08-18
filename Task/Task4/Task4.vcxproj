@@ -146,7 +146,6 @@
     <ClInclude Include="StateContext.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BaseState.cpp" />
     <ClCompile Include="ClosedState.cpp" />
     <ClCompile Include="LockedState.cpp" />
     <ClCompile Include="OpenedState.cpp" />

@@ -1,5 +1,5 @@
 #pragma once
-#include "BaseState.h"
+class BaseState;
 class StateContext {
 private:
 	BaseState* m_state;

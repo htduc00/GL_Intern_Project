@@ -1,6 +1,5 @@
 #include "ClosedState.h"
 #include "OpenedState.h"
-#include"StateContext.h"
 #include <iostream>
 
 void OpenedState::unlock(StateContext* context) {

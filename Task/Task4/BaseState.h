@@ -1,5 +1,5 @@
 #pragma once
-class StateContext;
+#include "StateContext.h"
 class BaseState {
 public:
 	virtual void unlock(StateContext* context) = 0;

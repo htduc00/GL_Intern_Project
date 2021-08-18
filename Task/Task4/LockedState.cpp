@@ -1,6 +1,5 @@
 #include "LockedState.h"
 #include "ClosedState.h"
-#include"StateContext.h"
 #include <iostream>
 void LockedState::unlock(StateContext* context) {
 	std::cout << "State: locked -> closed\n" << std::endl;
