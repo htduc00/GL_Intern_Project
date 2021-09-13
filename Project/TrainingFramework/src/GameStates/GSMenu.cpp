@@ -1,6 +1,8 @@
 #include "GSMenu.h"
 #include "Camera.h"
 
+SoLoud::Wav m_wav;
+
 GSMenu::GSMenu() : GameStateBase(StateType::STATE_MENU),
 m_background(nullptr), m_listButton(std::list<std::shared_ptr<GameButton>>{})
 {
@@ -18,6 +20,10 @@ void func(std::shared_ptr<GameButton> button, std::shared_ptr<Texture> texture) 
 
 void GSMenu::Init()
 {
+
+	m_wav.load("..\\Data\\Sounds\\bg_sound.wav");
+	m_wav.setLooping(true);
+	m_wav.setVolume(0.4f);
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto texture = ResourceManagers::GetInstance()->GetTexture("menu_bg1.tga");
 
@@ -33,6 +39,7 @@ void GSMenu::Init()
 	button->Set2DPosition(Globals::screenWidth / 2, 350);
 	button->SetSize(113, 45);
 	button->SetOnClick([]() {
+		Application::GetInstance()->GetSoloud()->play(m_wav);
 		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
 		});
 	m_listButton.push_back(button);
@@ -44,7 +51,6 @@ void GSMenu::Init()
 	button->Set2DPosition(Globals::screenWidth / 2, 410);
 	button->SetSize(220, 45);
 	button->SetOnClick([]() {
-		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_PLAY);
 		});
 	m_listButton.push_back(button);
 

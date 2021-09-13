@@ -6,6 +6,7 @@
 #include "Texture.h"
 #include "Application.h"
 #include "ObjectPool.h"
+#include <ctime>
 
 MoonBullet::MoonBullet(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture,
 	int damage, float speed) : AnimationSprite(model, shader, texture), m_damage(damage), m_speed(speed), m_isActive(false)
@@ -25,7 +26,12 @@ void MoonBullet::OnCollision()
 		targetPos.y - 30 <= m_position.y && targetPos.y + 30 >= m_position.y)
 	{
 		Reset();
-		m_target->SetHP(m_target->GetHP() - m_damage);
+		srand(time(NULL));
+		int random = rand() % 100 + 1;
+		if(random <= m_crit)
+			m_target->SetHP(m_target->GetHP() - m_damage*1.5);
+		else
+			m_target->SetHP(m_target->GetHP() - m_damage);
 	}
 }
 
@@ -132,6 +138,11 @@ void MoonBullet::Reset()
 void MoonBullet::SetDamage(int damage)
 {
 	m_damage = damage;
+}
+
+void MoonBullet::SetCrit(int crit)
+{
+	m_crit = crit;
 }
 
 void MoonBullet::SetTarget(std::shared_ptr<Enemy> target)

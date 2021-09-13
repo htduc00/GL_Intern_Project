@@ -20,6 +20,7 @@ void Application::Init()
 	m_camera = std::make_shared<Camera>(0, 0, Globals::screenWidth, 0, Globals::screenHeight, -1.0f, 1.0f, 10.0f);
 
 	GameStateMachine::GetInstance()->PushState(StateType::STATE_INTRO);
+	m_Soloud.init();
 }
 
 void Application::Update(GLfloat deltaTime)
@@ -55,6 +56,11 @@ void Application::HandleMouseMoveEvent(GLint x, GLint y)
 {
 	if (GameStateMachine::GetInstance()->HasState())
 		GameStateMachine::GetInstance()->CurrentState()->HandleMouseMoveEvents(x, y);
+}
+
+SoLoud::Soloud* Application::GetSoloud()
+{
+	return &m_Soloud;
 }
 
 void Application::Exit()

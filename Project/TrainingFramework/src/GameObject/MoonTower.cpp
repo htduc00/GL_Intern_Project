@@ -24,10 +24,15 @@ void MoonTower::Upgrade()
 void MoonTower::Fire(std::shared_ptr<Enemy> target)
 {
 	MoonBullet* bullet = ObjectPool::GetInstance()->getMoonBullet();
-	if (m_level == 2)
+	if (m_level == 1) {
+		bullet->SetTexture(ResourceManagers::GetInstance()->GetTexture("MoonBullet1.tga"));
+		bullet->SetCrit(20);
+	}
+	if (m_level == 2) {
 		bullet->SetTexture(ResourceManagers::GetInstance()->GetTexture("MoonBullet2.tga"));
-	else if (m_level == 3)
-		bullet->SetTexture(ResourceManagers::GetInstance()->GetTexture("MoonBullet3.tga"));
+		bullet->SetCrit(40);
+	}
+	bullet->SetDamage(m_damage);
 	bullet->Set2DPosition(m_position.x, m_position.y - 40);
 	bullet->SetTarget(target);
 	bullet->SetSize(24, 24);

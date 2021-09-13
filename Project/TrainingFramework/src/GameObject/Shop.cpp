@@ -7,7 +7,7 @@
 #include "ResourceManagers.h"
 
 Shop::Shop(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture) 
-	: Sprite2D(model,shader,texture), m_isActive(false),m_closeButton(nullptr),m_listItem(NULL)
+	: Sprite2D(model,shader,texture), m_isActive(false),m_closeButton(nullptr),m_listItem(),m_message(nullptr)
 {
 }
 

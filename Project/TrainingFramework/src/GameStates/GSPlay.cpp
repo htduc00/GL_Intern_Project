@@ -1,5 +1,4 @@
 #include "GSPlay.h"
-
 #include "Shader.h"
 #include "Texture.h"
 #include "Model.h"
@@ -12,30 +11,25 @@
 #include "WarriorEnemy.h"
 #include "PossessedEnemy.h"
 #include "ShadowEnemy.h"
-
 #include "Text.h"
 #include "Shop.h"
 #include "GameButton.h"
 #include "AnimationSprite.h"
 #include "TowerInfo.h"
-
 #include "Tower.h"
 #include "LightTower.h"
 #include "MagicTower.h"
 #include "MoonTower.h"
-
 #include <iostream>
 #include <fstream>
 #include <math.h>
-
 #include "ObjectPool.h"
 
 //--------wave control------------
 int totalWave = 10;
 int currentWave = 0;
-int timer = 600;
-std::shared_ptr<Text> next_wave;
-int remaining_mob = 94;
+int timer = 3600;
+std::shared_ptr<Text> next_wave ;
 Vector2 gate1(17 * 32 + 16, 23 * 32);
 Vector2 gate2(0, 13 * 32);
 std::vector<std::shared_ptr<Enemy>> listEnemy;
@@ -60,6 +54,9 @@ std::shared_ptr<GameButton> upgrade_button, sell_button, info_close;
 std::shared_ptr<Text> name, damage, range, effectRaito;
 Tower* currentSelectedTower;
 //------------------
+std::shared_ptr<TowerInfo> game_info;
+std::list<std::shared_ptr<GameButton>> game_info_close;
+std::shared_ptr<GameButton> infoBtn;
 std::shared_ptr<Text> currentHealth;
 int totalHealth = 50;
 
@@ -76,7 +73,7 @@ GSPlay::~GSPlay()
 
 void GSPlay::Init()
 {
-
+	Reset();
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
 
@@ -91,6 +88,23 @@ void GSPlay::Init()
 	m_foreground = std::make_shared<Sprite2D>(model, shader, texture);
 	m_foreground->Set2DPosition((float)Globals::screenWidth / 2, (float)Globals::screenHeight / 2);
 	m_foreground->SetSize(Globals::screenWidth, Globals::screenHeight);
+
+	//game info
+	texture = ResourceManagers::GetInstance()->GetTexture("game_info.tga");
+	game_info = std::make_shared<TowerInfo>(model, shader, texture);
+	game_info->Set2DPosition((float)Globals::screenWidth / 2, (float)Globals::screenHeight / 2);
+	game_info->SetSize(853, 512);
+	game_info->SetActive(true);
+
+	texture = ResourceManagers::GetInstance()->GetTexture("btn_close.tga");
+	std::shared_ptr<GameButton> game_info_closebtn = std::make_shared<GameButton>(model, shader, texture);
+	game_info_closebtn->Set2DPosition(1066 - 30, 128 + 30);
+	game_info_closebtn->SetSize(30, 30);
+	game_info_closebtn->SetOnClick([]() {
+		game_info->SetActive(false);
+		});
+	game_info_close.push_back(game_info_closebtn);
+	game_info->SetListButton(game_info_close);
 
 	//shop
 	texture = ResourceManagers::GetInstance()->GetTexture("shop.tga");
@@ -120,7 +134,7 @@ void GSPlay::Init()
 		auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 		auto texture = ResourceManagers::GetInstance()->GetTexture("LightTower1.tga");
 		auto shader = ResourceManagers::GetInstance()->GetShader("AnimationShader");
-		std::shared_ptr<Tower> tower = std::make_shared<LightTower>(model, shader, texture, 400, 200,50);
+		std::shared_ptr<Tower> tower = std::make_shared<LightTower>(model, shader, texture, 400, 150, 50);
 		tower->Set2DPosition(selectedPos.x, selectedPos.y - 45);
 		tower->SetSize(128, 156);
 		tower->setNumFrames(14);
@@ -146,6 +160,7 @@ void GSPlay::Init()
 		listTower.push_back(tower);
 		shop->SetActive(false);
 		listTowerPos.at(selectedTowerPos)->SetActive(false);
+		std::cout << selectedTowerPos << "\n";
 		tower->SetTowerPos(selectedTowerPos);
 		money -= 50;
 		money_str->SetText(std::to_string(money));
@@ -165,7 +180,7 @@ void GSPlay::Init()
 		auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 		auto texture = ResourceManagers::GetInstance()->GetTexture("MagicTower1.tga");
 		auto shader = ResourceManagers::GetInstance()->GetShader("AnimationShader");
-		std::shared_ptr<Tower> tower = std::make_shared<MagicTower>(model, shader, texture, 400, 200,100);
+		std::shared_ptr<Tower> tower = std::make_shared<MagicTower>(model, shader, texture, 200, 150,100);
 		tower->Set2DPosition(selectedPos.x, selectedPos.y - 45);
 		tower->SetSize(150, 125);
 		tower->setNumFrames(6);
@@ -211,7 +226,7 @@ void GSPlay::Init()
 		auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
 		auto texture = ResourceManagers::GetInstance()->GetTexture("BloodMoonTower1.tga");
 		auto shader = ResourceManagers::GetInstance()->GetShader("AnimationShader");
-		std::shared_ptr<Tower> tower = std::make_shared<MoonTower>(model, shader, texture, 400,200,200);
+		std::shared_ptr<Tower> tower = std::make_shared<MoonTower>(model, shader, texture, 600,200,200);
 		tower->Set2DPosition(selectedPos.x,selectedPos.y - 55);
 		tower->SetSize(128,156);
 		tower->setNumFrames(11);
@@ -269,7 +284,10 @@ void GSPlay::Init()
 	sell_button = std::make_shared<GameButton>(model, shader, texture);
 	sell_button->SetSize(30, 30);
 	sell_button->SetOnClick([]() {
-		money += (int)(currentSelectedTower->getLevel() * currentSelectedTower->getGoldUpgrade() + currentSelectedTower->getGoldUpgrade()) * 7 / 10;
+		if (currentSelectedTower->getLevel() > 1)
+			money += (int)((currentSelectedTower->getLevel() * currentSelectedTower->getGoldUpgrade() + currentSelectedTower->getGoldUpgrade()) * 7 / 10);
+		else
+			money += (int)((currentSelectedTower->getGoldUpgrade() * 7 / 10));
 		money_str->SetText(std::to_string(money));
 		listTowerPos.at(currentSelectedTower->GetTowerPos())->SetActive(true);
 		tower_info->SetActive(false);
@@ -430,8 +448,19 @@ void GSPlay::Init()
 	m_buttonClose->Set2DPosition(Globals::screenWidth - 50, 50);
 	m_buttonClose->SetSize(50, 50);
 	m_buttonClose->SetOnClick([]() {
-		GameStateMachine::GetInstance()->PopState();
+		Application::GetInstance()->GetSoloud()->stopAll();
+		GameStateMachine::GetInstance()->Cleanup();
+		GameStateMachine::GetInstance()->ChangeState(StateType::STATE_MENU);
 		});
+	
+	texture = ResourceManagers::GetInstance()->GetTexture("info_btn.tga");
+	infoBtn = std::make_shared<GameButton>(model, shader, texture);
+	infoBtn->Set2DPosition(Globals::screenWidth - 100, 50);
+	infoBtn->SetSize(40, 40);
+	infoBtn->SetOnClick([]() {
+		game_info->SetActive(true);
+		});
+	
 
 	shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
 	texture = ResourceManagers::GetInstance()->GetTexture("Coin.tga");
@@ -492,6 +521,7 @@ void GSPlay::HandleKeyEvents(int key, bool bIsPressed)
 void GSPlay::HandleTouchEvents(int x, int y, bool bIsPressed)
 {
 	m_buttonClose->HandleTouchEvents(x, y, bIsPressed);
+	infoBtn->HandleTouchEvents(x, y, bIsPressed);
 	for (auto pos : listTowerPos)
 	{
 		pos->HandleTouchEvents(x, y, bIsPressed);
@@ -507,6 +537,9 @@ void GSPlay::HandleTouchEvents(int x, int y, bool bIsPressed)
 	for (auto button : listInfoButton) {
 		button->HandleTouchEvents(x, y, bIsPressed);
 	}
+	for (auto button : game_info_close) {
+		button->HandleTouchEvents(x, y, bIsPressed);
+	}
 }
 
 void GSPlay::HandleMouseMoveEvents(int x, int y)
@@ -519,7 +552,7 @@ void SpawnEnemy(int currentWave) {
 	std::shared_ptr<Enemy> enemy = nullptr;
 
 	std::string wave;
-	std::ifstream WaveConfig("D:\\GL_Intern_Project\\Project\\Data\\WaveConfig.txt");
+	std::ifstream WaveConfig("..\\Data\\WaveConfig.txt");
 	while (wave != "wave" + std::to_string(currentWave)) {
 		std::getline(WaveConfig, wave);
 	}
@@ -529,14 +562,14 @@ void SpawnEnemy(int currentWave) {
 	std::stringstream ss1(gate1), ss2(gate2);
 	while (ss1 >> mob1 && ss2 >> mob2) {
 		if (mob1 == "skeleton") {
-			enemy = std::make_shared<SkeletonEnemy>(model, shader, nullptr, Direction::UP, 1500, 1, 40.0f, 10);
+			enemy = std::make_shared<SkeletonEnemy>(model, shader, nullptr, Direction::UP, 1500, 2, 40.0f, 10);
 			enemy->Set2DPosition(17 * 32 + 16, 23 * 32);
 			enemy->SetSize(50, 64);
 			//m_enemy->Set2DPosition(0, 13 * 32);
 			listEnemy.push_back(enemy);
 		}
 		if (mob2 == "skeleton") {
-			enemy = std::make_shared<SkeletonEnemy>(model, shader, nullptr, Direction::RIGHT, 1500, 1, 40.0f, 10);
+			enemy = std::make_shared<SkeletonEnemy>(model, shader, nullptr, Direction::RIGHT, 1500, 2, 40.0f, 10);
 			//enemy->Set2DPosition(17 * 32 + 16, 23 * 32);
 			enemy->Set2DPosition(0, 13 * 32);
 			enemy->SetSize(50, 64);
@@ -557,42 +590,42 @@ void SpawnEnemy(int currentWave) {
 			listEnemy.push_back(enemy);
 		}
 		if (mob1 == "warrior") {
-			enemy = std::make_shared<WarriorEnemy>(model, shader, nullptr, Direction::UP, 2500, 2, 30.0f, 20);
+			enemy = std::make_shared<WarriorEnemy>(model, shader, nullptr, Direction::UP, 2500, 4, 30.0f, 20);
 			enemy->Set2DPosition(17 * 32 + 16, 23 * 32);
 			//enemy->Set2DPosition(0, 13 * 32);
 			enemy->SetSize(50, 64);
 			listEnemy.push_back(enemy);
 		}
 		if (mob2 == "warrior") {
-			enemy = std::make_shared<WarriorEnemy>(model, shader, nullptr, Direction::RIGHT, 2500, 2, 30.0f, 20);
+			enemy = std::make_shared<WarriorEnemy>(model, shader, nullptr, Direction::RIGHT, 2500, 4, 30.0f, 20);
 			//enemy->Set2DPosition(17 * 32 + 16, 23 * 32);
 			enemy->Set2DPosition(0, 13 * 32);
 			enemy->SetSize(50, 64);
 			listEnemy.push_back(enemy);
 		}
 		if (mob1 == "possessed") {
-			enemy = std::make_shared<PossessedEnemy>(model, shader, nullptr, Direction::UP, 1750, 3, 55.0f, 30);
+			enemy = std::make_shared<PossessedEnemy>(model, shader, nullptr, Direction::UP, 1750, 4, 55.0f, 20);
 			enemy->Set2DPosition(17 * 32 + 16, 23 * 32);
 			//enemy->Set2DPosition(0, 13 * 32);
 			enemy->SetSize(50, 64);
 			listEnemy.push_back(enemy);
 		}
 		if (mob2 == "possessed") {
-			enemy = std::make_shared<PossessedEnemy>(model, shader, nullptr, Direction::RIGHT, 1750, 3, 55.0f, 30);
+			enemy = std::make_shared<PossessedEnemy>(model, shader, nullptr, Direction::RIGHT, 1750, 4, 55.0f, 20);
 			//enemy->Set2DPosition(17 * 32 + 16, 23 * 32);
 			enemy->Set2DPosition(0, 13 * 32);
 			enemy->SetSize(50, 64);
 			listEnemy.push_back(enemy);
 		}
 		if (mob1 == "shadow") {
-			enemy = std::make_shared<ShadowEnemy>(model, shader, nullptr, Direction::UP, 3500, 4, 60.0f, 50);
+			enemy = std::make_shared<ShadowEnemy>(model, shader, nullptr, Direction::UP, 3500, 5, 60.0f, 50);
 			enemy->Set2DPosition(17 * 32 + 16, 23 * 32);
 			//enemy->Set2DPosition(0, 13 * 32);
 			enemy->SetSize(75, 96);
 			listEnemy.push_back(enemy);
 		}
 		if (mob2 == "shadow") {
-			enemy = std::make_shared<ShadowEnemy>(model, shader, nullptr, Direction::RIGHT, 3500, 4, 60.0f, 50);
+			enemy = std::make_shared<ShadowEnemy>(model, shader, nullptr, Direction::RIGHT, 3500, 5, 60.0f, 50);
 			//enemy->Set2DPosition(17 * 32 + 16, 23 * 32);
 			enemy->Set2DPosition(0, 13 * 32);
 			enemy->SetSize(75, 96);
@@ -609,13 +642,21 @@ void GSPlay::Update(float deltaTime)
 		timer -= deltaTime;
 		next_wave->SetText("Next wave: " + std::to_string((int)timer / 60));
 		if (timer <= 0) {
-			timer = 600;
+			timer = 3600;
 			currentWave += 1;
 			SpawnEnemy(currentWave);
 		}
 	}
 	for (auto enemy : listEnemy)
 	{
+		if (enemy->IsSlow()) {
+			enemy->SetSlowTime(enemy->GetSlowTime() + deltaTime);
+			if (enemy->GetSlowTime() >= 2.0f) {
+				enemy->SetSlowTime(0.0f);
+				enemy->SetSlow(false);
+				enemy->SetSpeed(enemy->GetOriginalSpeed());
+			}
+		}
 		if (enemy->GetHP() <= 0 ) {
 			money += enemy->GetGold();
 			money_str->SetText(std::to_string(money));
@@ -627,15 +668,15 @@ void GSPlay::Update(float deltaTime)
 			if (totalHealth <= 0) {
 				Globals::result = "Defeat";
 				GameStateMachine::GetInstance()->ChangeState(StateType::STATE_END);
-				Reset();
+				Application::GetInstance()->GetSoloud()->stopAll();
 				break;
 			}
 			currentHealth->SetText(std::to_string(totalHealth) + "/50");
 			listEnemy.erase(std::remove(listEnemy.begin(), listEnemy.end(), enemy), listEnemy.end());
-			if (listEnemy.size() == 0 && totalHealth >0 ) {
+			if (listEnemy.size() == 0 && totalHealth >0 && currentWave == totalWave) {
 				Globals::result = "Victory";
 				GameStateMachine::GetInstance()->ChangeState(StateType::STATE_END);
-				Reset();
+				Application::GetInstance()->GetSoloud()->stopAll();
 				break;
 			}
 			break;
@@ -700,6 +741,8 @@ void GSPlay::Draw()
 	next_wave->Draw();
 	currentHealth->Draw();
 	m_buttonClose->Draw();
+	infoBtn->Draw();
+	game_info->Draw();
 	shop->Draw();
 	tower_info->Draw();
 	coin->Draw();
@@ -713,12 +756,6 @@ void Reset()
 	listTower.clear();
 	currentWave = 0;
 	money = 150;
-	timer = 600;
-	for (auto pos : listTowerPos) {
-		pos->SetActive(true);
-	}
-	shop->SetActive(false);
-	shop_message->SetText("");
-	tower_info->SetActive(false);
-
+	timer = 3600;
+	listTowerPos.clear();
 }

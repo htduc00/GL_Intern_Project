@@ -12,7 +12,7 @@ GSCredit::~GSCredit()
 void GSCredit::Init()
 {
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
-	auto texture = ResourceManagers::GetInstance()->GetTexture("menu_bg.tga");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("credit.tga");
 
 	// background
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
@@ -23,20 +23,12 @@ void GSCredit::Init()
 	// button close
 	texture = ResourceManagers::GetInstance()->GetTexture("btn_close.tga");
 	std::shared_ptr<GameButton>  button = std::make_shared<GameButton>(model, shader, texture);
-	button->Set2DPosition(Globals::screenWidth - 80, 50);
-	button->SetSize(80, 80);
+	button->Set2DPosition(Globals::screenWidth - 60, 60);
+	button->SetSize(50, 50);
 	button->SetOnClick([]() {
 		GameStateMachine::GetInstance()->PopState();
 		});
 	m_listButton.push_back(button);
-
-	// name
-	shader = ResourceManagers::GetInstance()->GetShader("TextShader");
-	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("gill.ttf");
-	std::shared_ptr<Text> text = std::make_shared< Text>(shader, font, "Hoang Trung Duc - PTIT", TextColor::WHITE, 1.0);
-	text->Set2DPosition(Vector2(Globals::screenWidth / 2 - 130, 400));
-	m_listText.push_back(text);
-
 }
 
 void GSCredit::Exit()
@@ -78,19 +70,11 @@ void GSCredit::HandleMouseMoveEvents(int x, int y)
 
 void GSCredit::Update(float deltaTime)
 {
-	for (auto it : m_listButton)
-	{
-		it->Update(deltaTime);
-	}
 }
 
 void GSCredit::Draw()
 {
 	m_background->Draw();
-	for (auto it : m_listText)
-	{
-		it->Draw();
-	}
 	for (auto it : m_listButton)
 	{
 		it->Draw();

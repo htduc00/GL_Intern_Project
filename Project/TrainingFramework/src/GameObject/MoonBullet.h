@@ -9,6 +9,7 @@ protected:
 	float m_speed;
 	Vector2 m_velocity = { 0,0 };
 	bool m_isActive;
+	int m_crit = 20;
 	std::shared_ptr<Enemy> m_target = nullptr;
 public:
 	MoonBullet(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, int damage, float speed);
@@ -21,6 +22,7 @@ public:
 	void Move(GLfloat deltatime);
 	void Reset();
 	void SetDamage(int damage);
+	void SetCrit(int crit);
 
 	void SetTarget(std::shared_ptr<Enemy> target);
 };

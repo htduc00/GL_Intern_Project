@@ -1,7 +1,8 @@
 #pragma once
 #include "GameStateBase.h"
 #include "GameButton.h"
-
+#include "SoLoud/soloud_wav.h"
+#include "Application.h"
 class GSMenu :
 	public GameStateBase
 {

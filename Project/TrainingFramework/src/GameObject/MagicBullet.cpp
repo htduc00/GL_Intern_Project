@@ -25,6 +25,10 @@ void MagicBullet::OnCollision()
 		targetPos.y - 30 <= m_position.y && targetPos.y + 30 >= m_position.y)
 	{
 		Reset();
+		if (!m_target->IsSlow()) {
+			m_target->SetSlow(true);
+			m_target->SetSpeed(m_target->GetSpeed()*(1-m_slow));
+		}
 		m_target->SetHP(m_target->GetHP() - m_damage);
 	}
 }
@@ -132,6 +136,11 @@ void MagicBullet::Reset()
 void MagicBullet::SetDamage(int damage)
 {
 	m_damage = damage;
+}
+
+void MagicBullet::SetSlow(float slow)
+{
+	m_slow = slow;
 }
 
 void MagicBullet::SetTarget(std::shared_ptr<Enemy> target)

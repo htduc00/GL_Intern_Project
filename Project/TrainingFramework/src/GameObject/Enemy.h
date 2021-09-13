@@ -19,10 +19,13 @@ protected:
 	bool m_IsGoal = false;
 	float m_fVelocityX;
 	float m_fVelocityY;
+	float m_originalSpeed;
 	float m_fSpeed;
 	int m_HP;
 	int m_Damage;
 	int m_gold;
+	bool m_isSlow = false;
+	float m_slowTime = 0.0f;
 	int m_map[24][40] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,3,3,3,3,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -54,6 +57,8 @@ public:
 	virtual ~Enemy();
 
 	void				SetSpeed(float speed);
+	float				GetSpeed();
+	float				GetOriginalSpeed();
 	void				Update(GLfloat deltatime) override;
 	void				Draw() override;
 	void				SetHP(int HP);
@@ -62,6 +67,10 @@ public:
 	void				SetGoal(bool isGoal);
 	bool				IsGoal();
 	int					GetGold();
+	bool				IsSlow();
+	void				SetSlow(bool isSlow);
+	float				GetSlowTime();
+	void				SetSlowTime(float slowtime);
 
 	virtual void		Move(GLfloat deltatime) = 0;
 	virtual void		MoveUp() = 0;

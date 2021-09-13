@@ -4,7 +4,7 @@
 
 Enemy::Enemy(std::shared_ptr<Model> model, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture, Direction dir,
 	int HP, int Damage, float speed,int gold) : AnimationSprite(model,shader,texture), m_fVelocityX(0.0f), m_fVelocityY(0.0f),m_rand(rand()%2),
-	m_dir(dir),m_HP(HP),m_Damage(Damage), m_fSpeed(speed), m_gold(gold)
+	m_dir(dir),m_HP(HP),m_Damage(Damage), m_fSpeed(speed), m_gold(gold),m_originalSpeed(speed)
 {
 	Init();
 }
@@ -16,6 +16,9 @@ void Enemy::SetSpeed(float speed)
 	m_fSpeed = speed;
 }
 
+float Enemy::GetSpeed() {
+	return m_fSpeed;
+}
 int Enemy::GetHP() {
 	return m_HP;
 }
@@ -36,6 +39,10 @@ int Enemy::GetGold()
 {
 	return m_gold;
 }
+float Enemy::GetOriginalSpeed()
+{
+	return m_originalSpeed;
+}
 void Enemy::Update(GLfloat deltatime)
 {
 	m_currentFrameTime += deltatime;
@@ -53,6 +60,21 @@ void Enemy::SetGoal(bool isGoal)
 {
 	m_IsGoal = isGoal;
 }
+
+void Enemy::SetSlow(bool isSlow) {
+	m_isSlow = isSlow;
+}
+bool Enemy::IsSlow() {
+	return m_isSlow;
+}
+void Enemy::SetSlowTime(float slowtime) {
+	m_slowTime = slowtime;
+}
+float Enemy::GetSlowTime() {
+	return m_slowTime;
+}
+
+
 void Enemy::Draw()
 {
 	if (m_pCamera == nullptr) return;
