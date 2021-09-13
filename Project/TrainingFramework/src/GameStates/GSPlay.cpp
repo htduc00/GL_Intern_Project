@@ -51,7 +51,7 @@ std::list<std::shared_ptr<GameButton>> listInfoButton;
 std::list<std::shared_ptr<Text>> listInfoText;
 POINT p;
 std::shared_ptr<GameButton> upgrade_button, sell_button, info_close;
-std::shared_ptr<Text> name, damage, range, effectRaito;
+std::shared_ptr<Text> name, damage, range;
 Tower* currentSelectedTower;
 //------------------
 std::shared_ptr<TowerInfo> game_info;
@@ -153,8 +153,6 @@ void GSPlay::Init()
 			damage->Set2DPosition(p.x + 48, p.y - 65);
 			range->SetText("Range: "+std::to_string(tw->getRange()));
 			range->Set2DPosition(p.x + 48, p.y - 45);
-			effectRaito->SetText("50%");
-			effectRaito->Set2DPosition(p.x + 48, p.y - 25);
 			tower_info->SetActive(true);
 			});
 		listTower.push_back(tower);
@@ -199,8 +197,6 @@ void GSPlay::Init()
 			damage->Set2DPosition(p.x + 48, p.y - 65);
 			range->SetText("Range: " + std::to_string(tw->getRange()));
 			range->Set2DPosition(p.x + 48, p.y - 45);
-			effectRaito->SetText("50%");
-			effectRaito->Set2DPosition(p.x + 48, p.y - 25);
 
 			tower_info->SetActive(true);
 			});
@@ -245,8 +241,6 @@ void GSPlay::Init()
 			damage->Set2DPosition(p.x + 48, p.y - 65);
 			range->SetText("Range: " + std::to_string(tw->getRange()));
 			range->Set2DPosition(p.x + 48, p.y - 45);
-			effectRaito->SetText("50%");
-			effectRaito->Set2DPosition(p.x + 48, p.y - 25);
 
 			tower_info->SetActive(true);
 			});
@@ -484,11 +478,9 @@ void GSPlay::Init()
 	 name = std::make_shared< Text>(shader, font, "", TextColor::WHITE, 0.7);
 	 damage = std::make_shared< Text>(shader, font, "", TextColor::WHITE, 0.7);
 	 range = std::make_shared< Text>(shader, font, "", TextColor::WHITE, 0.7);
-	 effectRaito = std::make_shared< Text>(shader, font, "", TextColor::WHITE, 0.7);
 	 listInfoText.push_back(name);
 	 listInfoText.push_back(damage);
 	 listInfoText.push_back(range);
-	 listInfoText.push_back(effectRaito);
 	 tower_info->SetListText(listInfoText);
 
 	next_wave = std::make_shared< Text>(shader, font, "Next wave: "+std::to_string(timer), TextColor::RED, 2.0);

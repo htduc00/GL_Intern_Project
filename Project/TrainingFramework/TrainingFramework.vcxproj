@@ -110,7 +110,7 @@
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Nvidia|Win32'">
-    <OutDir>$(SolutionDir)\BIN-Nvidia\</OutDir>
+    <OutDir>$(SolutionDir)\FinalBuild\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <CopyLocalDeploymentContent>false</CopyLocalDeploymentContent>
