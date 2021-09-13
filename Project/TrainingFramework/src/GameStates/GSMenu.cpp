@@ -19,7 +19,7 @@ void func(std::shared_ptr<GameButton> button, std::shared_ptr<Texture> texture) 
 void GSMenu::Init()
 {
 	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D.nfg");
-	auto texture = ResourceManagers::GetInstance()->GetTexture("menu_bg.tga");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("menu_bg1.tga");
 
 	// background
 	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");

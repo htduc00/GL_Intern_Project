@@ -1,0 +1,30 @@
+wave1
+skeleton slinger
+skeleton slinger
+wave2
+skeleton skeleton slinger 
+skeleton skeleton slinger
+wave3
+skeleton warrior skeleton slinger
+skeleton warrior skeleton slinger
+wave4
+warrior warrior skeleton slinger slinger
+warrior warrior skeleton slinger slinger
+wave5
+skeleton skeleton warrior warrior slinger 
+skeleton skeleton warrior warrior slinger
+wave6
+warrior warrior possessed slinger slinger 
+warrior warrior possessed slinger slinger
+wave7
+warrior skeleton skeleton possessed slinger 
+warrior skeleton skeleton possessed slinger
+wave8
+warrior possessed possessed slinger shadow  
+warrior possessed possessed slinger shadow
+wave9
+warrior possessed shadow possessed warrior shadow 
+warrior possessed shadow possessed warrior shadow
+wave10
+shadow warrior possessed warrior shadow slinger shadow 
+shadow warrior possessed warrior shadow slinger shadow

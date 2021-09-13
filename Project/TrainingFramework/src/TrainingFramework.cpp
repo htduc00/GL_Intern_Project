@@ -4,7 +4,8 @@
 #include "utilities.h" 
 
 int Globals::screenWidth = 1280;
-int Globals::screenHeight = 720;
+int Globals::screenHeight = 768;
+std::string Globals::result = "";
 
 GLint Init(ESContext* esContext)
 {
@@ -48,7 +49,7 @@ GLint _tmain(GLint argc, _TCHAR* argv[])
 {
 	ESContext esContext;
 	esInitContext(&esContext);
-	esCreateWindow(&esContext, "Epic Game", Globals::screenWidth, Globals::screenHeight, ES_WINDOW_RGB | ES_WINDOW_DEPTH);
+	esCreateWindow(&esContext, "The Last Battle", Globals::screenWidth, Globals::screenHeight, ES_WINDOW_RGB | ES_WINDOW_DEPTH);
 	if (Init(&esContext) != 0)
 		return 0;
 

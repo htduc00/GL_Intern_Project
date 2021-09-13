@@ -5,6 +5,9 @@ class Sprite2D;
 class Sprite3D;
 class Text;
 class GameButton;
+class Enemy;
+class AnimationSprite;
+class Shop;
 
 class GSPlay :
 	public GameStateBase
@@ -26,10 +29,11 @@ public:
 	void	Update(float deltaTime) override;
 	void	Draw() override;
 
+
 private:
 	std::shared_ptr<Sprite2D>	m_background;
+	std::shared_ptr<Sprite2D>	m_foreground;
 	std::shared_ptr<Text>		m_score;
-	std::list<std::shared_ptr<GameButton>>	m_listButton;
-
+	std::shared_ptr<GameButton> m_buttonClose;
 };
 
